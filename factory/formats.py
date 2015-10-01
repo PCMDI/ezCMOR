@@ -395,7 +395,6 @@ class HandlerNCAggregate(object):
             print "reading %s" % filename.strip()
             f = cdms2.open( filename.strip(), 'r' )
             timeunits =   f(self.vartoread).getTime().units
-            TimeValues = f(self.vartoread).getTime()[:]
             cur_time_values = [ cdtime.reltime(TimeValues[i], timeunits ) for i in range(len(TimeValues)) ]
             rel_time_values = [ cur_time_values[i].torel("days since 1900-01-01").value for i in range(len(TimeValues)) ]
             rel_time = rel_time + rel_time_values
