@@ -1,0 +1,43 @@
+#
+# TRMM resource file for CMIP5 conversion
+#
+
+# Program will loop on years and substiute in template.
+# Here we are creating decadal files using a grads ctl file
+#
+years=""
+#file_template        = "/export/durack1/150923_ezCMOR/150307_HadISST_sst.nc"
+file_template        = "./140916_sst.mnmean.nc"
+
+experiment_id        = 'obs'
+institution          = 'Lawrence Livermore National Laboratory, Livermore CA, 94550'
+calendar             = 'gregorian'
+institute_id         = 'LLNL'
+model_id             = 'Obs-SST'
+source               = 'Obs-SST (test)'
+contact              = "Paul Durack durack1@llnl.gov"
+references           = 'http://science.nasa.gov/missions/trmm/'
+instrument           = 'SST'
+mip_specs            = 'CMIP5'
+data_structure       = 'grid'
+source_type          = 'satellite_retrieval_and_gauge_analysis'
+# used for filename (up to _)
+source_fn            = ''
+source_id            = 'SST'
+realm                = 'atmos'
+obs_project          = 'SST'
+processing_version  = 'L3'
+processing_level    = 1
+inpath               = "Tables"
+table                = 'CMIP5_Omon_obs'
+cmor_var             = '[\tos\]'      
+level                = '[\\]'
+equation             = '[\(data+274.15)\]'
+inpath               = 'Tables'
+original_var         = '[\sst\]'
+original_units       = '[\K\]'
+OutputTimeUnits      = "months since 1900-1-1"
+InputTimeUnits       = "internal"
+SetGlbAttributes     = "[(\global\,rc[\product\]),(\processing_version\,rc[\processing_version\]),(\title\,\obs-TRMM output prepared for obs4MIPs NASA-GSFC observations\)]"
+DelGlbAttributes     = "[\realization\,\experiment\,\physics_version\,\initialization_method\]"	
+
