@@ -57,12 +57,7 @@ expt_id_ok: '4xCO2 aqua planet' 'aqua4xCO2'
 expt_id_ok: 'aqua planet plus 4K anomaly' 'aqua4K'
 expt_id_ok: 'AMIP plus 4K anomaly' 'amip4K'
 !expt_id_ok: 'NASA observation' 'obs'
-expt_id_ok: 'Modern-ERA Retrospective Analysis' 'MERRA-reanalysis'
-expt_id_ok: 'ERA Interim, Synoptic Monthly Means, Full Resolution' 'ERA-Interim'
-expt_id_ok: 'Japanese 25-year ReAnalysis, fcst, Monthly mean' 'JRA-25'
-expt_id_ok: 'Japanese 55-year ReAnalysis, fcst, Monthly mean' 'JRA-55'
-!Added 2/26 by judy hertz for CFSR processing
-expt_id_ok: 'National Centers for Environmental Prediction (NCEP) Climate Forecast System Reanalysis (CFSR)' 'CFSR-reanalysis'
+expt_id_ok: 'ana4MIPs' 'analysis'
 approx_interval:  30.000000     ! approximate spacing between successive time
                           !   samples (in units of the output time 
                           !   coordinate.
@@ -133,7 +128,6 @@ out_name:         plev
 stored_direction: decreasing
 tolerance:        0.001
 type:             double
-requested:        100000. 92500. 85000. 70000. 60000. 50000. 40000. 30000. 25000. 20000. 15000. 10000. 7000. 5000. 3000. 2000. 1000.        ! space-separated list of requested coordinates
 must_have_bounds: no
 !----------------------------------
 !
@@ -1984,31 +1978,27 @@ ok_max_mean_abs:   3.299e+04
 !
 
 !============
-variable_entry:    tro3
+variable_entry:    to3
 !============
 modeling_realm:    atmos atmosChem
-
 !----------------------------------
 ! Variable attributes:
-! unit changed to ppmv 2/11/2015 by Judy
 !----------------------------------
 standard_name:     mole_fraction_of_ozone_in_air
-units:             ppmv 
+units:             1e-9
 cell_methods:      time: mean
 cell_measures:     area: areacella
 long_name:         Mole Fraction of O3
 !----------------------------------
 ! Additional variable information:
-! min/max commented out 2/11 by Judy
-! valid_min, max edited 2/11 by Judy
 !----------------------------------
 dimensions:        longitude latitude plevs time
-out_name:          tro3
+out_name:          to3
 type:              real
-valid_min:         0.0 
-valid_max:         25.0 
-!ok_min_mean_abs:   -149.1
-!ok_max_mean_abs:   7558
+valid_min:         -419.2
+valid_max:         1.162e+04
+ok_min_mean_abs:   -149.1
+ok_max_mean_abs:   7558
 !----------------------------------
 !
 

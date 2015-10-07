@@ -15,9 +15,9 @@ missing_value: 1.e20      ! value used to indicate a missing value
 baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation 
 product: output
 
-required_global_attributes: creation_date tracking_id forcing model_id parent_experiment_id parent_experiment_rip branch_time contact institute_id ! space separated required global attribute 
+!required_global_attributes: creation_date tracking_id forcing model_id parent_experiment_id parent_experiment_rip branch_time contact institute_id ! space separated required global attribute 
+required_global_attributes: creation_date tracking_id model_id contact institute_id ! space separated required global attribute
 
-!forcings:   N/A Nat Ant GHG SD SI SA TO SO Oz LU Sl Vl SS Ds BC MD OC AA
 forcings:   N/A
 
 
@@ -294,7 +294,7 @@ long_name:        ocean depth coordinate
 ! Additional axis information:
 !----------------------------------	
 out_name:         lev
-must_have_bounds: yes
+!must_have_bounds: yes
 stored_direction: decreasing
 valid_min:        0.
 valid_max:        12000.

@@ -1,4 +1,22 @@
-#!/bin/env python
+#!/usr/bin/env python
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 import cdms2
 import cdtime
 import cmor
@@ -124,7 +142,10 @@ def process( rc ):
                     print "Converting: %s <=> %s " % ( variable, eval(rc['cmor_var'])[j] )
                 except:
                     if( aVariable[j] != 'equation' ) :
+                        print "Variable %s can't open" % variable
                         continue
+                    else:
+                        print "Executing %s " % eval(rc['equation'])[j]
                 
                 rc['cvrt_original_units'] = eval(rc['original_units'])[j]
                 rc['cvrt_cmor_var']       = eval(rc['cmor_var'])[j]
@@ -136,6 +157,7 @@ def process( rc ):
                     rc['cvrt_positive']       = ""
                     
                 
+                data=Handler.getData()
 
                 # ----------------------------------------------------------
                 # Evaluate equation if needed. Usually used to change units
@@ -281,8 +303,10 @@ def createTime(Handler, rc):
 def getCMIP5lev(data,rc):
     '''
     '''
-    
-    oTable               = CMORTable(rc['inpath'], rc['table'], "plevs")
+    try: 
+        oTable               = CMORTable(rc['inpath'], rc['table'], "plevs")
+    except:
+        oTable               = CMORTable(rc['inpath'], rc['table'], "depth100m")
     # ----------------------
     # Extract spefied levels
     # ----------------------
@@ -292,7 +316,7 @@ def getCMIP5lev(data,rc):
             data.getLevel().units == "hPa"       or
             data.getLevel().units == "mbar"    ):
             # --------------------------
-            # Change units to Pascal
+            # Change units for to Pascal
             # ---------------------------
             LevelScaleFactor = 100
             dataLevels = data.getLevel()[:] * LevelScaleFactor
@@ -301,10 +325,9 @@ def getCMIP5lev(data,rc):
         # No level selected, return all data array
         # ----------------------------------------
         if( len(rc['cvrt_level'].split(":")) == 1 ):
-            lev=cdms2.createAxis( [ float(item)
-                                    for item in dataLevels ] )
+            levels =  [ float(item) for item in dataLevels ]
+            lev=cdms2.createAxis( levels )
             lev.designateLevel()
-            #pdb.set_trace()
             lev.units="pa"
             try:
                 lev.long_name=data.getLevel().long_name
@@ -401,7 +424,7 @@ def createAxes(rc, latvals, lonvals, data):
         {'table_entry' : 'longitude',
          'units'       : 'degrees_east',
          'coord_vals'  : lonvals,
-         'cell_bounds' : lonbnds},
+         'cell_bounds' : lonvals.getBounds()},
         ]
     
     fill_value = data.fill_value
@@ -412,6 +435,14 @@ def createAxes(rc, latvals, lonvals, data):
                      'coord_vals'  : [2.0] })
         data = numpy.array(data[:])
         data = data[:,:,:,numpy.newaxis]
+
+    elif( rc['cvrt_level'] == 'olevel' ):
+        data = getCMIP5lev( data, rc )
+        levels=data.getLevel()[:]
+        axes = numpy.insert(axes, 1,
+                           {'table_entry' : 'depth_coord',
+                            'units'       : 'm',
+                            'coord_vals'  : levels })
 
     elif( rc['cvrt_level'] != '' ):
         data = getCMIP5lev( data, rc )
@@ -456,8 +487,8 @@ def main():
     '''
     '''
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hy:r:",
-                                   ["help" ,"year=","resource="])
+        opts, args = getopt.getopt(sys.argv[1:], "hy:r:x:",
+                                   ["help" ,"year=","resource=","excel="])
     except getopt.GetoptError, err:
         usage(str(err))# will print something like "option -a not recognized"
         return(2)
@@ -467,9 +498,12 @@ def main():
     # --------------------------
     year     = -1
     resource = None
+    excel    = None
     for o, a in opts:
         if o in ("-r", "--resource"):
             resource = a
+        elif o in ("-x", "--excel"):
+            excel = a
         elif o in ("-h", "--help"):
             usage()
             return(0)
@@ -481,14 +515,15 @@ def main():
     # ------------------------------
     # Does the resource file exist?
     # ------------------------------
-    if( resource == None ) or ( not os.path.isfile( resource ) ) :
-        usage( "bad Input Resource File" )
+    if( ((resource == None ) or ( not os.path.isfile( resource ) )) and (( excel == None ) or ( not os.path.isfile( excel ) )) ):
+        usage("bad Input Resource/Excel File")
         return 1
 
     # -----------------------
     # Read in "rc" file
     # -----------------------
-    rc=ESGFresources( resource )
+    if( resource ):
+       rc = ESGFresources( resource )
 
     # -----------------------------------------------------------
     # Create a emtpy value for date key if they are not defined
@@ -513,7 +548,9 @@ def main():
     # --------------------------------
     # Extract CMIP5 Table information
     # --------------------------------
-    oTable               = CMORTable( rc['inpath'], rc['table'] )
+    oTable               = CMORTable(rc['inpath'], rc['table'])
+    if( not 'original_var' in rc.resources.keys() ):
+        sys.exit(-1)
     rc['project_id']     = oTable[ 'project_id'     ]
     rc['product']        = oTable[ 'product'        ]
     rc['modeling_realm'] = oTable[ 'modeling_realm' ]

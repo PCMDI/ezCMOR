@@ -13,7 +13,7 @@ missing_value: 1.e20      ! value used to indicate a missing value
                           !   floating-point numbers (float or real)
 
 baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation 
-product: observations 
+product: reanalysis
 
 required_global_attributes: creation_date tracking_id model_id contact institute_id ! space separated required global attribute 
 
