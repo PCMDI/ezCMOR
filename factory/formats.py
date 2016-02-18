@@ -5,12 +5,12 @@
 import os
 import pdb
 import sys
-import magic
-import scipy.io
+#import magic
+#import scipy.io
 import cdtime
 import numpy.ma as ma
 import numpy
-import netCDF4
+#import netCDF4
 import cdms2
 import re
 
@@ -126,6 +126,7 @@ class HandlerHDF4(object):
         Open ctl file and read data
         '''
         #pdb.set_trace()
+        import netCDF4
         self.f=netCDF4.Dataset(file,'r')            
         self.data=self.f.variables[variable][:].astype('float32')     # read variable            
 
@@ -288,7 +289,6 @@ class HandlerNetCDF(object):
             timeunits=self.getTimeUnits()
 
         time_values =   self.f.getAxis("time")[:]
-        #pdb.set_trace()
         time_bounds = time_values
         if( len(time_values) == 1 ):
             numpy.append(time_bounds, 1 )
@@ -636,6 +636,7 @@ class HandlerMatlab(object):
         '''
         Open Matlab and read data
         '''
+        import scipy.io
         self.f=scipy.io.loadmat(file)
         self.oMatlab=MatlabData(self.f)
 
@@ -695,6 +696,7 @@ class HandlerFormats(object):
 
     def __new__( klass, filename ):
         #pdb.set_trace()
+        import magic
         MagicNumber = magic.from_file( filename )
         try:
             return HandlerFormats.Formats[MagicNumber]()

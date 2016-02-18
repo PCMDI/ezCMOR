@@ -69,13 +69,17 @@ def process( rc ):
         if( files == [] ):
             print "No file found: Check your resource file"
             return -1
-        # ------------------------------------------------
-        # Get the right handler to manage this file format
-        # ------------------------------------------------
-        try:  
-            Handler = factory.HandlerFormats(files[0].strip())
-        except:
-            print "Could not find a handler. Check "+files[0].strip()
+
+        if( rc['cdms'] == True ):
+            Handler = factory.HandlerFormats.Formats['NetCDF Data Format data']()
+        else:
+            # ------------------------------------------------
+            # Get the right handler to manage this file format
+            # ------------------------------------------------
+            try:  
+                Handler = factory.HandlerFormats(files[0].strip())
+            except:
+                print "Could not find a handler. Check "+files[0].strip()
 
         # -----------------------------------
         # Take care of cmor initialization.
@@ -487,8 +491,8 @@ def main():
     '''
     '''
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hy:r:x:",
-                                   ["help" ,"year=","resource=","excel="])
+        opts, args = getopt.getopt(sys.argv[1:], "hy:r:x:c",
+                                   ["help" ,"year=","resource=","excel=","cdms"])
     except getopt.GetoptError, err:
         usage(str(err))# will print something like "option -a not recognized"
         return(2)
@@ -499,6 +503,7 @@ def main():
     year     = -1
     resource = None
     excel    = None
+    forceCDMS  = False
     for o, a in opts:
         if o in ("-r", "--resource"):
             resource = a
@@ -509,6 +514,8 @@ def main():
             return(0)
         elif o in ("-y", "--year"):
             yr = a
+        elif o in ("-c", "--cdms"):
+            forceCDMS = True
         else:
             assert False, "unhandled option"
 
@@ -555,6 +562,8 @@ def main():
     rc['product']        = oTable[ 'product'        ]
     rc['modeling_realm'] = oTable[ 'modeling_realm' ]
     rc['frequency']      = oTable[ 'frequency'      ]
+    rc['cdms']           = forceCDMS
+
     if( process(rc) ):
         return -1
             

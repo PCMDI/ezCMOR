@@ -1,4 +1,5 @@
-import netCDF4
+#import netCDF4
+import cdms2
 import re
 import pdb
 
@@ -83,33 +84,20 @@ class CMORAttributes:
         Open Cmor file
         '''
         self.filename = file
-        self.f = netCDF4.Dataset( self.filename, 'r+' )
+        self.f = cdms2.open( self.filename, 'r+' )
         
     def GlbDel( self, attribute ):
         '''
         Delete attribute
         '''
-        self.f.__delattr__(attribute)
+        delattr(self.f,attribute)
         
     def GlbSet( self, attribute, value):
         '''
         Set attribute
         '''
-        self.f.__setattr__(attribute, value)
+        setattr(self.f,attribute,value)
 
-    def VarDel( self, variable,attribute ):
-        '''
-        Delete Variable attribute
-        '''
-        var=self.f.variables[variable]
-        var.__delatttr__(attribute)
-        
-    def VarSet( self, variable, attribute, value):
-        '''
-        Set Variable attribute
-        '''
-        var=self.variables[variable]
-        var.__setattr__(attribute,value)
     def close(self):
         '''
         '''

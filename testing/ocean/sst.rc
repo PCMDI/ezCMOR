@@ -6,8 +6,7 @@
 # Here we are creating decadal files using a grads ctl file
 #
 years=""
-#file_template        = "/export/durack1/150923_ezCMOR/150307_HadISST_sst.nc"
-file_template        = "./140916_sst.mnmean.nc"
+file_template        = "/software/ezCMOR/download/140916_sst.mnmean.nc"
 
 experiment_id        = 'obs'
 institution          = 'Lawrence Livermore National Laboratory, Livermore CA, 94550'
@@ -32,7 +31,7 @@ inpath               = "Tables"
 table                = 'CMIP5_Omon_obs'
 cmor_var             = '[\tos\]'      
 level                = '[\\]'
-equation             = '[\(data+274.15)\]'
+equation             = '[\(data+273.15)\]'
 inpath               = 'Tables'
 original_var         = '[\sst\]'
 original_units       = '[\K\]'
